@@ -11,10 +11,10 @@ dependencies:
 - scipy
 - scikit-learn
 - pip
-- joblib
 - os
 - matplotlib.pyplot 
 - pickle
 - pip:
   - streamlit
+  - joblib
 
