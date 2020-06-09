@@ -1,12 +1,7 @@
 #Core Pkg
 import streamlit as st
-import os 
-<<<<<<< HEAD
+import os
 #import joblib
-=======
-import joblib
->>>>>>> 175f6030cacbf66bf3e3b4b7115f6ad3532b4aea
-
 
 #EDA Pkgs
 import pandas as pd 
@@ -185,10 +180,6 @@ def main():
     				#res2 = res2.sort_values(1, ascending=False)
     				result=res2
     				st.subheader("""Probability of a patient to be readmitted:
-<<<<<<< HEAD
-    					
-=======
->>>>>>> 175f6030cacbf66bf3e3b4b7115f6ad3532b4aea
     					""")
     				st.write(result)
 
