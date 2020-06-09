@@ -1,0 +1,16 @@
+name: demo-streamlit-heroku
+channels:
+- conda-forge
+dependencies:
+- python=3.8
+- conda
+- pandas
+- numpy
+- matplotlib
+- seaborn
+- scipy
+- scikit-learn
+- pip
+- pip:
+  - streamlit
+
