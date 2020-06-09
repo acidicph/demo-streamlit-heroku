@@ -181,7 +181,6 @@ def main():
     				#res2 = res2.sort_values(1, ascending=False)
     				result=res2
     				st.subheader("""Probability of a patient to be readmitted:
-    					
     					""")
     				st.write(result)
 
