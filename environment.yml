@@ -11,6 +11,10 @@ dependencies:
 - scipy
 - scikit-learn
 - pip
+- os
+- matplotlib.pyplot 
+- pickle
 - pip:
   - streamlit
+
 
