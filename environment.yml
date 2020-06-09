@@ -16,5 +16,5 @@ dependencies:
 - pickle
 - pip:
   - streamlit
-  - joblib
+
 
