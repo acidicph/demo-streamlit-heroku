@@ -148,14 +148,14 @@ def main():
         if st.checkbox("Show Shape"):
             st.write(data.shape)
 
-        if st.checkbox("Distribution of Patients' Time in Hospital"):
+        #if st.checkbox("Distribution of Patients' Time in Hospital"):
             #st.write(data['time_in_hospital'].value_counts().plot(kind='bar', x= "Number of Days", y= "Number of Patients",title = 'Distribution of Patients\' time in hospital'))
             #st.pyplot()
-            data['time_in_hospital']\
-            .plot.bar(rot=0)\
-            .set(title="Distribution of Patients' Time in Hospital",
-            xlabel="Days", ylabel="No. of Patients)")
-            st.pyplot()
+            #data['time_in_hospital']\
+            #.plot.bar(rot=0)\
+            #.set(title="Distribution of Patients' Time in Hospital",
+            #xlabel="Days", ylabel="No. of Patients)")
+            #st.pyplot()
 
 
         data2 = load_data("cleaned2.csv")
