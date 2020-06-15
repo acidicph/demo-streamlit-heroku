@@ -130,9 +130,9 @@ def preprocessing(df):
 def main():
     st.title("Admit Once")
     st.subheader("Reducing Readmission Rate for Patients with Diabetes")
-    st.markdown("""To navigate, choose from the dropdown on the left:
-    1. Explore - Allows you to explore patients data and current trends of readmissions within 30 days.
-    2. Predict - Allows you to evaluate which patient is at risk of being readmitted within 30 days.
+    st.markdown("""To navigate, choose from the dropdown on the left:\n
+    1. Explore - Allows you to explore patients data and current trends of readmissions within 30 days.\n
+    2. Predict - Allows you to evaluate which patient is at risk of being readmitted within 30 days.\n
     3. Simulate - Allows you to modify certain aspects of the patients and see how that affects readmission probability.
     """)
     image = Image.open('icon.png')
