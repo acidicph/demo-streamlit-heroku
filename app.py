@@ -130,6 +130,7 @@ def preprocessing(df):
 def main():
     tabs_style = """
 <style>
+
         * {
   box-sizing: border-box;
 }
@@ -208,7 +209,8 @@ body {
   opacity: 1;
   transition: all 0.35s;
 }
-</style
+</style>
+    """
     image = Image.open('icon.png')
     st.image(image, caption='Your second opionin partner', use_column_width=True)
     # Menu
