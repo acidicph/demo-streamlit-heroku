@@ -128,13 +128,87 @@ def preprocessing(df):
 
 
 def main():
-    st.title("Admit Once")
-    st.subheader("Reducing Readmission Rate for Patients with Diabetes")
-    st.markdown("""To navigate, choose from the dropdown on the left:\n
-    1. Explore - Allows you to explore patients data and current trends of readmissions within 30 days.\n
-    2. Predict - Allows you to evaluate which patient is at risk of being readmitted within 30 days.\n
-    3. Simulate - Allows you to modify certain aspects of the patients and see how that affects readmission probability.
-    """)
+    tabs_style = """
+<style>
+        * {
+  box-sizing: border-box;
+}
+body {
+  font-family: "Saira";
+  background: #DCE3E8;
+  color: #697c86;
+  line-height: 1.618em;
+}
+.wrapper {
+  max-width: 50rem;
+  width: 100%;
+  margin: 0 auto;
+}
+.tabs {
+  position: relative;
+  margin: 3rem 0;
+  background: #ff787f;
+  height: 14.75rem;
+}
+.tabs::before,
+.tabs::after {
+  content: "";
+  display: table;
+}
+.tabs::after {
+  clear: both;
+}
+.tab {
+  float: left;
+}
+.tab-switch {
+  display: none;
+}
+.tab-label {
+  position: relative;
+  display: block;
+  line-height: 2.75em;
+  height: 3em;
+  padding: 0 1.618em;
+  background: #ff787f;
+  border-right: 0.125rem solid #16a085;
+  color: #fff;
+  cursor: pointer;
+  top: 0;
+  transition: all 0.25s;
+}
+.tab-label:hover {
+  top: -0.25rem;
+  transition: top 0.25s;
+}
+.tab-content {
+  height: 12rem;
+  position: absolute;
+  z-index: 1;
+  top: 2.75em;
+  left: 0;
+  padding: 1.618rem;
+  background: #fff;
+  color: #2c3e50;
+  border-bottom: 0.25rem solid #bdc3c7;
+  opacity: 0;
+  transition: all 0.35s;
+}
+.tab-switch:checked + .tab-label {
+  background: #fff;
+  color: #ff787f;
+  border-bottom: 0;
+  border-right: 0.125rem solid #fff;
+  transition: all 0.35s;
+  z-index: 1;
+  top: -0.0625rem;
+}
+.tab-switch:checked + label + .tab-content {
+  z-index: 2;
+  opacity: 1;
+  transition: all 0.35s;
+}
+</style
     image = Image.open('icon.png')
     st.image(image, caption='Your second opionin partner', use_column_width=True)
     # Menu
