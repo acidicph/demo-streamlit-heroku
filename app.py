@@ -130,7 +130,6 @@ def preprocessing(df):
 def main():
     tabs_style = """
 <style>
-
         * {
   box-sizing: border-box;
 }
@@ -211,8 +210,12 @@ body {
 }
 </style>
     """
-    image = Image.open('icon.png')
-    st.image(image, caption='Your second opionin partner', use_column_width=True)
+    st.write(tabs_style, unsafe_allow_html=True)
+
+    #st.title("Admit Once")  
+
+    image = Image.open('icon2.png')
+    st.image(image, use_column_width=True)
     # Menu
     menu = ["Explore", "Predict", "Simulate"]
     choices = st.sidebar.selectbox("Select from Menu", menu)
