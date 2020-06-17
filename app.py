@@ -306,8 +306,7 @@ body {
                 IDS = [input_id]
                 ID2= int(input_id)
                 df3 = dfsim.loc[dfsim['encounter_ID']==ID2]
-
-
+                
 
                 if input_id !="":
 
@@ -375,11 +374,8 @@ body {
                         df3.loc[:, 'discharge_to_inpatient_inst'] =  Hospital
                         st.markdown("## Summary of New input")
                         st.write(df3)
-                        
-                        
 
-
-                       if st.button("Simulate"):
+                    if st.button("Simulate"):
                         predictor = load_prediction_model("LogReg_model.sav")
                         inputdata, scaleddata = preprocessing(df3)
                         prediction = predictor.predict(scaleddata)
@@ -395,8 +391,84 @@ body {
                         result = res2
                         st.markdown(" ## Simulated Probability of a patient to be readmitted:")
                         st.write(result)
-                            
+                        
+                        features = ['time_in_hospital',
+                            'num_procedures',
+                            'num_medications',
+                            'number_outpatient',
+                            'number_emergency',
+                            'number_inpatient',
+                            'num_lab_procedures',
+                            'number_diagnoses', 'metformin',
+                            'repaglinide',
+                            'nateglinide',
+                            'chlorpropamide',
+                            'glimepiride',
+                            'glipizide',
+                            'glyburide',
+                            'pioglitazone',
+                            'rosiglitazone',
+                            'insulin',
+                            'glyburide-metformin',
+                            'change',
+                            'diabetesMed',
+                            'gender_Male',
+                            'admission_type_id_urgent',
+                            'admission_source_id_er',
+                            'admission_source_id_referral',
+                            'admission_source_id_transfer',
+                            'max_glu_serum_>200',
+                            'max_glu_serum_>300',
+                            'max_glu_serum_Norm',
+                            'A1Cresult_>7',
+                            'A1Cresult_>8',
+                            'A1Cresult_Norm',
+                            'diag_t_circulatory',
+                            'diag_t_digestive',
+                            'diag_t_metabolic_immunity',
+                            'diag_t_respiratory',
+                            'diag_t2_circulatory',
+                            'diag_t2_digestive',
+                            'diag_t2_genitourinary',
+                            'diag_t2_metabolic_immunity',
+                            'diag_t2_respiratory',
+                            'admit_phys_cadio',
+                            'admit_phys_er',
+                            'admit_phys_gen_surgery',
+                            'admit_phys_internal_med',
+                            'discharge_to_another_rehab',
+                            'discharge_to_home',
+                            'discharge_to_home_health_serv',
+                            'discharge_to_inpatient_inst',
+                            'discharge_to_others',
+                            'discharge_to_short_hospital',
+                            'discharge_to_snf',
+                            'payer_blu_x',
+                            'payer_health_maint_org',
+                            'payer_medicaid',
+                            'payer_medicare',
+                            'payer_self', 'age_cat_0-30', 'age_cat_30-50', 'age_cat_50-70', 'age_cat_>70']
 
+                        coeflist=predictor.coef_
+                        coeflist=np.transpose(coeflist)
+                        columns=["coef"]
+                        multiplier=pd.DataFrame(index=features ,data=coeflist , columns=columns)
+                        multiplier.index.name = 'newhead'
+                        multiplier.reset_index(inplace=True)
+                        multiplier = multiplier.sort_values(by='coef', ascending=False)
+                        valuecoef = np.transpose(scaleddata)
+                        valuecoef.columns = ['values']
+                        valuecoef.index.name = 'newhead'
+                        valuecoef.reset_index(inplace=True)
+                        mergetab = pd.merge(multiplier,valuecoef, on='newhead')
+                        mergetab['impact'] = mergetab['values']*mergetab['coef']
+                        mergetab['absimpact'] = abs(mergetab['impact'])
+                        mergetab = mergetab.sort_values(by='absimpact', ascending=False)
+                        mergetab.index=mergetab['newhead']
+                        mergetab = mergetab.drop(['age_cat_30-50','age_cat_50-70','insulin','num_medications','num_procedures','repaglinide'])
+                        mergetab = mergetab[mergetab['absimpact'] >= .005]
+                        st.write(alt.Chart( mergetab).mark_bar().encode(
+                        x=alt.X('impact'), y=alt.X('newhead', sort=None),).properties(width=500, height=400) )
                         
 
 
