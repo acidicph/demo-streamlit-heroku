@@ -379,7 +379,7 @@ body {
                         
 
 
-                       if st.button("Simulate"):   
+                       if st.button("Simulate"):
                             predictor = load_prediction_model("LogReg_model.sav")
                             inputdata, scaleddata = preprocessing(df3)
 
