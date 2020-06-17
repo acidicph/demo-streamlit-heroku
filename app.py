@@ -380,26 +380,21 @@ body {
 
 
                        if st.button("Simulate"):
-                            predictor = load_prediction_model("LogReg_model.sav")
-                            inputdata, scaleddata = preprocessing(df3)
-
-                            prediction = predictor.predict(scaleddata)
-                            prediction = pd.DataFrame(prediction)
-                            prediction = prediction.rename({0: 'Prediction Results'}, axis=1)
-                            encidpred = pd.concat([inputdata['encounter_ID'].reset_index(drop=True), prediction], axis=1)
-                            encidpred = encidpred.replace({1: "Yes", 0: "No"})
-                            st.markdown("## Simulated Prediction")
-                            st.write(encidpred)
-                # final_result = get_key(prediction['Prediction Results'], predict_label)
-                # st.success(final_result)
-
-                            res = pd.DataFrame(predictor.predict_proba(scaleddata))
-                            res['Readm Prob'] = res[1]
-                            res2 = pd.concat([res['Readm Prob'], inputdata.reset_index(drop=True)], axis=1)
-                            # res2 = res2.sort_values(1, ascending=False)
-                            result = res2
-                            st.markdown(" ## Simulated Probability of a patient to be readmitted:")
-                            st.write(result)
+                        predictor = load_prediction_model("LogReg_model.sav")
+                        inputdata, scaleddata = preprocessing(df3)
+                        prediction = predictor.predict(scaleddata)
+                        prediction = pd.DataFrame(prediction)
+                        prediction = prediction.rename({0: 'Prediction Results'}, axis=1)
+                        encidpred = pd.concat([inputdata['encounter_ID'].reset_index(drop=True), prediction], axis=1)
+                        encidpred = encidpred.replace({1: "Yes", 0: "No"})
+                        st.markdown("## Simulated Prediction")
+                        st.write(encidpred)
+                        res = pd.DataFrame(predictor.predict_proba(scaleddata))
+                        res['Readm Prob'] = res[1]
+                        res2 = pd.concat([res['Readm Prob'], inputdata.reset_index(drop=True)], axis=1)
+                        result = res2
+                        st.markdown(" ## Simulated Probability of a patient to be readmitted:")
+                        st.write(result)
                             
 
                         
