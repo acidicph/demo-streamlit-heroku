@@ -243,7 +243,7 @@ body {
             #st.pyplot()
 
 
-        data2 = load_data("cleaned2.csv")
+        data2 = load_data("cleaned3.csv")
         if st.checkbox("Probabiliy Density"):
             predictor = load_prediction_model("LogReg_model.sav")
             prediction = predictor.predict(data2)
