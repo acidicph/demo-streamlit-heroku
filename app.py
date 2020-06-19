@@ -42,7 +42,18 @@ predict_label = {'Patient NOT likely to be readmitted within 30 days.': 0,
                  'Patient requires attention, likely to be admitted within 30 days!!': 1}
 
 
-def preprocessing(df):
+def preprocessing(df, ID2):
+
+    df=pd.get_dummies(df, columns=['weight', 'race', 'gender', 'admission_type_id',
+                                 'admission_source_id', 'max_glu_serum', 'A1Cresult', 'readmitted', 'diag_t',
+                                 'diag_t2', 'admit_phys', 'discharge_to', 'payer', 'age_cat'])
+
+    df=df.drop(columns=['age','discharge_disposition_id', 'payer_code', 'medical_specialty', 'weight_unkown',
+                        'race_?','race_Other','gender_Unknown/Invalid','admission_type_id_Not Mapped',
+                        'admission_type_id_unknown', 'admission_source_id_missing', 'admission_source_id_other',
+                        'max_glu_serum_None','A1Cresult_None',  'admit_phys_others', 'admit_phys_unkown',
+                        'payer_others','readmitted_>30', 'readmitted_NO'])
+
     features = ['time_in_hospital',
                 'num_procedures',
                 'num_medications',
@@ -109,7 +120,9 @@ def preprocessing(df):
                 'num_lab_procedures',
                 'number_diagnoses']
 
+    df= df.loc[df['encounter_ID']==ID2]
     df2 = df.copy()
+    
 
     from sklearn.preprocessing import StandardScaler
 
@@ -245,7 +258,7 @@ body {
 
         data2 = load_data("cleaned3.csv")
         if st.checkbox("Probabiliy Density"):
-            predictor = load_prediction_model("LogReg_model.sav")
+            predictor = load_prediction_model("LogReg_model2.sav")
             prediction = predictor.predict(data2)
             res = pd.DataFrame(predictor.predict_proba(data2))
             res['Readm Prob'] = res[1]
@@ -264,7 +277,7 @@ body {
 
         if st.button("Evaluate"):
 
-                predictor = load_prediction_model("LogReg_model.sav")
+                predictor = load_prediction_model("LogReg_model2.sav")
                 inputdata, scaleddata = preprocessing(data)
 
                 prediction = predictor.predict(scaleddata)
@@ -293,8 +306,8 @@ body {
             2. Adjust Variables 
             3. Click Simulate button.
             """)
-        file_name = "train_input_test.csv"
-        dfsim = pd.read_csv("train_input_test.csv")
+        file_name = "sampletest.csv"
+        dfsim = pd.read_csv("sampletest.csv")
         input_id = st.text_input("Enter ID", "")
         s = st.State()
         if not s:
@@ -306,6 +319,9 @@ body {
                 IDS = [input_id]
                 ID2= int(input_id)
                 df3 = dfsim.loc[dfsim['encounter_ID']==ID2]
+                df3 = df3.drop(columns = ['readmitted'])
+                st.markdown("### Current Status")
+                st.dataframe(df3.style.highlight_max(axis=1))
                 
 
                 if input_id !="":
@@ -313,84 +329,102 @@ body {
                     with open(file_name, newline='') as csvfile:
                         reader = csv.DictReader(csvfile)
                         rows = [row for row in reader if row['encounter_ID'] in IDS]
-                        st.markdown("### Current Status")
+                        
                         df3 = dfsim.loc[dfsim['encounter_ID']==ID2]
-                        st.write(df3)
+                        
                         
                     if rows:
 
-                        st.markdown("# Length of Stay:")
+                        st.markdown("# _Length_ _of_ _Stay_:")
                         new_time_in_hospital = st.slider("Time in hospital", 1, 14, int(rows[0]['time_in_hospital']), None, None)
+                        
                         st.markdown("# Medications")
                         new_num_medications = st.slider("Number of Medication", 1, 81, int(rows[0]['num_medications']))
-                        st.markdown("### Key: 0: N/A, 1: Lower Dose, 2: Steady Does, 3: Increase Dose")
-                        new_metform = st.slider("Metformin", 0,3, int(rows[0]['metformin']))
-                        new_repaglinide = st.slider("Repaglinide", 0,3, int(rows[0]['repaglinide']))
-                        new_nateglinide = st.slider("Nateglinide", 0,3, int(rows[0]['nateglinide']))
-                        new_chlorpropamide = st.slider("Chlorpropamide", 0,3, int(rows[0]['chlorpropamide']))
-                        new_glimepiride= st.slider("Glimepiride", 0,3, int(rows[0]['glimepiride']))
-                        new_glipizide = st.slider("Glipizide", 0,3, int(rows[0]['glipizide']))
-                        new_glyburide = st.slider("Glyburide", 0,3, int(rows[0]['glyburide']))
-                        new_pioglitazone = st.slider("Pioglitazone", 0,3, int(rows[0]['pioglitazone']))
-                        new_insulin = st.slider("Insulin", 0,3, int(rows[0]['insulin']))
-                        new_glyburide_metformin = st.slider("Glyburide-Mtformin", 0,3, int(rows[0]['glyburide-metformin']))
+
+                        meds = ["Metformin", "Repaglinide", "Nateglinide", "Chlorpropamide", "Glimepiride", "Glipizide", "Glyburide", "Pioglitazone", "Insulin", "Glyburide-Mtformin"]
+                        med_choice = st.selectbox("Select medication from Menu", meds)
+                        options =  [0, 1, 2, 3]
+                        med_options = st.selectbox("Dose", options, format_func=lambda x: "Not on this medication" if x == 0 else ("Lower dosage" if x == 1 else ("Steady dosage" if x == 2 else "Increase dosage")) )
+                        
+                        if med_choice == "Metformin":
+                            df3.loc[:, 'metformin'] =  med_options
+                        
+
+                        if med_choice == "Repaglinide":
+                            df3.loc[:, 'repaglinide'] =  med_options
+
+                        if med_choice == "Nateglinide":
+                            df3.loc[:, 'nateglinide'] =  med_options
+                        
+                        if med_choice == "Chlorpropamide":
+                            df3.loc[:, 'chlorpropamide'] =  med_options
+                        
+                        if med_choice == "Glimepiride":
+                            df3.loc[:, 'glimepiride'] =  med_options
+                        
+                        if med_choice == "Glipizide":
+                            df3.loc[:, 'glipizide'] =  med_options
+                        
+                        if med_choice == "Glyburide":
+                            df3.loc[:, 'glyburide'] =  med_options
+                        
+                        if med_choice == "Pioglitazone":
+                            df3.loc[:, 'pioglitazone'] =  med_options
+                        
+                        if med_choice == "Insulin":
+                            df3.loc[:, 'insulin'] =  med_options
+                        
+                        if med_choice == "Glyburide-Metformin":
+                            df3.loc[:, 'glyburide-metformin'] =  med_options
+
+
                         st.markdown("# Discharge:")
-                        #st.markdown("### Key: 0:No, 1: Yes")
-                        #Rehab = st.slider("Rehab Center", 0,1, int(rows[0]['discharge_to_another_rehab']))
-                        #Home = st.slider("Home", 0,1, int(rows[0]['discharge_to_home']))
-                        #Health_service = st.slider("Home Health Service", 0,1, int(rows[0]['discharge_to_home_health_serv']))
-                        #Hospital = st.slider("Another Hospital", 0,1, int(rows[0]['discharge_to_inpatient_inst']))
-                        #Short = st.slider("Short Stay Unit", 0,1, int(rows[0]['discharge_to_short_hospital']))
-                        #snf = st.slider("Skilled Nursing Facilit", 0,1, int(rows[0]['discharge_to_snf']))
-                        snf = st.selectbox("Skilled Nursing Facilit",(0,1), int(rows[0]['discharge_to_snf']), format_func=lambda x: "Yes" if x == 1 else "No")
-                        Health_service = st.selectbox("Home Health Service", (0,1), int(rows[0]['discharge_to_home_health_serv']), format_func=lambda x: "Yes" if x == 1 else "No")
-                        Rehab = st.selectbox("Rehab Center", (0,1), int(rows[0]['discharge_to_home']), format_func=lambda x: "Yes" if x == 1 else "No")
-                        Home = st.selectbox("Home", (0,1), int(rows[0]['discharge_to_snf']), format_func=lambda x: "Yes" if x == 1 else "No")
-                        Hospital = st.selectbox("Another Hospital", (0,1), int(rows[0]['discharge_to_inpatient_inst']), format_func=lambda x: "Yes" if x == 1 else "No")
-                        Short = st.selectbox("Short Stay Unit", (0,1), int(rows[0]['discharge_to_short_hospital']), format_func=lambda x: "Yes" if x == 1 else "No")
+                        st.markdown(" _Select_ _where_ _to_ _discharge_ _inpatient_:")
 
+                        discharge = ["Skilled Nursing Facility", "Home Health Service", "Rehab Center", "Home", "Transfer to another hospital", "Short Stay Unit"]
+                        #discharge_option = ['snf']
+                        discharge_to = st.selectbox("Select from Menu", discharge)
 
-
-                        df3 = dfsim.loc[dfsim['encounter_ID']==ID2]
+                        if discharge_to == "Skilled Nursing Facility":
+                            df3.loc[:, 'discharge_to'] =  ['snf']
+                        if discharge_to == "Home Health Service":
+                            df3.loc[:, 'discharge_to'] =  ['discharge_to_home_health_serv']
+                        if discharge_to == "Rehab Center":
+                            df3.loc[:, 'discharge_to'] =  ['discharge_to_another_rehab']
+                        if discharge_to == "Home":
+                            df3.loc[:, 'discharge_to'] =  ['discharge_to_home']
+                        if discharge_to == "Transfer to another hospital":
+                            df3.loc[:, 'discharge_to'] =  ['discharge_to_inpatient_inst']
+                        if discharge_to == "Short Stay Unit":
+                            df3.loc[:, 'discharge_to'] =  ['discharge_to_short_hospital']
 
 
                         df3.loc[:, 'time_in_hospital'] =  new_time_in_hospital
                         df3.loc[:, 'num_medications'] =  new_num_medications
-                        df3.loc[:, 'metformin'] =  new_metform
-                        df3.loc[:, 'repaglinide'] =  new_repaglinide
-                        df3.loc[:, 'nateglinide'] =  new_nateglinide
-                        df3.loc[:, 'chlorpropamide'] =  new_chlorpropamide
-                        df3.loc[:, 'glimepiride'] =  new_glimepiride
-                        df3.loc[:, 'glipizide'] =  new_glipizide
-                        df3.loc[:, 'glyburide'] =  new_glyburide
-                        df3.loc[:, 'pioglitazone'] =  new_pioglitazone
-                        df3.loc[:, 'insulin'] =  new_insulin
-                        df3.loc[:, 'glyburide-metformin'] =  new_glyburide_metformin
-                        df3.loc[:, 'discharge_to_another_rehab'] =  Rehab
-                        df3.loc[:, 'discharge_to_home'] =  Home
-                        df3.loc[:, 'discharge_to_home_health_serv'] =  Health_service
-                        df3.loc[:, 'discharge_to_short_hospital'] =  Short
-                        df3.loc[:, 'discharge_to_snf'] = snf
-                        df3.loc[:, 'discharge_to_inpatient_inst'] =  Hospital
+                        
                         st.markdown("## Summary of New input")
                         st.write(df3)
 
+
                     if st.button("Simulate"):
-                        predictor = load_prediction_model("LogReg_model.sav")
-                        inputdata, scaleddata = preprocessing(df3)
+                        dfsim.loc[dfsim['encounter_ID']==ID2] = df3
+                        predictor = load_prediction_model("LogReg_model2.sav")
+                        inputdata, scaleddata = preprocessing(dfsim, ID2)
                         prediction = predictor.predict(scaleddata)
                         prediction = pd.DataFrame(prediction)
                         prediction = prediction.rename({0: 'Prediction Results'}, axis=1)
                         encidpred = pd.concat([inputdata['encounter_ID'].reset_index(drop=True), prediction], axis=1)
                         encidpred = encidpred.replace({1: "Yes", 0: "No"})
                         st.markdown("## Simulated Prediction")
-                        st.write(encidpred)
+                       
                         res = pd.DataFrame(predictor.predict_proba(scaleddata))
                         res['Readm Prob'] = res[1]
+                        st.write(pd.concat([encidpred,pd.DataFrame(res['Readm Prob']).reset_index(drop=True)], axis=1) )
                         res2 = pd.concat([res['Readm Prob'], inputdata.reset_index(drop=True)], axis=1)
+                        # res2 = res2.sort_values(1, ascending=False)
                         result = res2
                         st.markdown(" ## Simulated Probability of a patient to be readmitted:")
-                        st.write(result)
+                        #st.write(result)
                         
                         features = ['time_in_hospital',
                             'num_procedures',
@@ -453,36 +487,28 @@ body {
                         coeflist=np.transpose(coeflist)
                         columns=["coef"]
                         multiplier=pd.DataFrame(index=features ,data=coeflist , columns=columns)
-                        multiplier.index.name = 'newhead'
+                        multiplier.index.name = 'Variables'
                         multiplier.reset_index(inplace=True)
                         multiplier = multiplier.sort_values(by='coef', ascending=False)
                         valuecoef = np.transpose(scaleddata)
                         valuecoef.columns = ['values']
-                        valuecoef.index.name = 'newhead'
+                        valuecoef.index.name = 'Variables'
                         valuecoef.reset_index(inplace=True)
-                        mergetab = pd.merge(multiplier,valuecoef, on='newhead')
-                        mergetab['impact'] = mergetab['values']*mergetab['coef']
-                        mergetab['absimpact'] = abs(mergetab['impact'])
+                        mergetab = pd.merge(multiplier,valuecoef, on='Variables')
+                        mergetab['Impact'] = mergetab['values']*mergetab['coef']
+                        mergetab['absimpact'] = abs(mergetab['Impact'])
                         mergetab = mergetab.sort_values(by='absimpact', ascending=False)
-                        mergetab.index=mergetab['newhead']
+                        mergetab.index=mergetab['Variables']
                         mergetab = mergetab.drop(['age_cat_30-50','age_cat_50-70','insulin','num_medications','num_procedures','repaglinide'])
                         mergetab = mergetab[mergetab['absimpact'] >= .005]
-                        st.write(alt.Chart( mergetab).mark_bar().encode(
-                        x=alt.X('impact'), y=alt.X('newhead', sort=None),).properties(width=500, height=400) )
-                        
-
-
-                    else:
-                            st.write("None found!")
-
-                else:
-                    st.write("Please set an Id first.")
+                        st.write(alt.Chart( mergetab).mark_bar(size=20).encode(
+                        x=alt.X('Impact'), y=alt.X('Variables', sort=None),).configure_axis(labelFontSize=20,titleFontSize=20).properties(width=700, height=500) )
+                
             except Exception as e:
-                # 'Looks like I am having problem connecting my backend' +
+                e = 'Looks like I am having problem connecting my backend'
                 st.write(e)
-
-
-
+        else:
+            st.write("None found!")
 
 
 if __name__ == '__main__':
