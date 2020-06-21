@@ -6,7 +6,7 @@ a. app.py
 b. pickled model
 c. figures related to the app
 
-> You can find the web application [here]([link to Google!](http://google.com)).
+> You can find the web application [here](https://admit-once.herokuapp.com/).
 
 _This project was created as part of Insight Fellows project, and is based on the conda environment.yml file provided in the repo._
 
