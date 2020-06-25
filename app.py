@@ -274,7 +274,6 @@ body {
     df_limited = df_limited.set_index('index')
     st.write(tabs_style, unsafe_allow_html=True)
 
-
     image = Image.open('icon2.png')
     st.image(image, use_column_width=True)
 
@@ -431,12 +430,10 @@ body {
             mergetab = mergetab[mergetab['Impact'] > 0]
             mergetab = mergetab.sort_values(by='absimpact', ascending=False)
             mergetab.index = mergetab['Variables']
-            #mergetab = mergetab.drop(['age_cat_30-50', 'age_cat_50-70', 'insulin', 'num_medications', 'num_procedures',                 'repaglinide'])
             mergetab = mergetab[mergetab['absimpact'] >= .005]
             st.write(alt.Chart(mergetab).mark_bar(size=20).encode(
                 x=alt.X('Impact'), y=alt.X('Variables', sort=None), ).configure_axis(labelFontSize=20,
                                                                                      titleFontSize=20))
-
 
 
 
