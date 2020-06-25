@@ -1,4 +1,3 @@
-
 import streamlit as st
 import os
 import joblib
@@ -318,80 +317,80 @@ body {
         if not s:
             s.pressed_first_button = False
 
-    if st.button("Populate data of selected inpatient") or s.pressed_first_button:
-        s.pressed_first_button = True  # preserve the info that you hit a button between runs
-        st.markdown("# _Length_ _of_ _Stay_:")
-        new_time_in_hospital = st.slider("Time in hospital", 1, 14, int(selected_rows['time_in_hospital']),
-                                         None, None)
+        if st.button("Populate data of selected inpatient") or s.pressed_first_button:
+            s.pressed_first_button = True  # preserve the info that you hit a button between runs
+            st.markdown("# _Length_ _of_ _Stay_:")
+            new_time_in_hospital = st.slider("Time in hospital", 1, 14, int(selected_rows['time_in_hospital']),
+                                             None, None)
 
-        st.markdown("# Medications")
-        new_num_medications = st.slider("Number of Medication", 1, 81, int(selected_rows['num_medications']))
+            st.markdown("# Medications")
+            new_num_medications = st.slider("Number of Medication", 1, 81, int(selected_rows['num_medications']))
 
-        meds = ["Metformin", "Repaglinide", "Nateglinide", "Chlorpropamide", "Glimepiride", "Glipizide",
-                "Glyburide", "Pioglitazone", "Insulin", "Glyburide-Mtformin"]
-        med_choice = st.selectbox("Select medication from Menu", meds)
-        options = [0, 1, 2, 3]
-        med_options = st.selectbox("Dose", options,
-                                   format_func=lambda x: "Not on this medication" if x == 0 else (
-                                       "Lower dosage" if x == 1 else (
-                                           "Steady dosage" if x == 2 else "Increase dosage")))
+            meds = ["Metformin", "Repaglinide", "Nateglinide", "Chlorpropamide", "Glimepiride", "Glipizide",
+                    "Glyburide", "Pioglitazone", "Insulin", "Glyburide-Mtformin"]
+            med_choice = st.selectbox("Select medication from Menu", meds)
+            options = [0, 1, 2, 3]
+            med_options = st.selectbox("Dose", options,
+                                       format_func=lambda x: "Not on this medication" if x == 0 else (
+                                           "Lower dosage" if x == 1 else (
+                                               "Steady dosage" if x == 2 else "Increase dosage")))
 
-        if med_choice == "Metformin":
-            selected_rows.loc[:, 'metformin'] = med_options
+            if med_choice == "Metformin":
+                selected_rows.loc[:, 'metformin'] = med_options
 
-        if med_choice == "Repaglinide":
-            selected_rows.loc[:, 'repaglinide'] = med_options
+            if med_choice == "Repaglinide":
+                selected_rows.loc[:, 'repaglinide'] = med_options
 
-        if med_choice == "Nateglinide":
-            selected_rows.loc[:, 'nateglinide'] = med_options
+            if med_choice == "Nateglinide":
+                selected_rows.loc[:, 'nateglinide'] = med_options
 
-        if med_choice == "Chlorpropamide":
-            selected_rows.loc[:, 'chlorpropamide'] = med_options
+            if med_choice == "Chlorpropamide":
+                selected_rows.loc[:, 'chlorpropamide'] = med_options
 
-        if med_choice == "Glimepiride":
-            selected_rows.loc[:, 'glimepiride'] = med_options
+            if med_choice == "Glimepiride":
+                selected_rows.loc[:, 'glimepiride'] = med_options
 
-        if med_choice == "Glipizide":
-            selected_rows.loc[:, 'glipizide'] = med_options
+            if med_choice == "Glipizide":
+                selected_rows.loc[:, 'glipizide'] = med_options
 
-        if med_choice == "Glyburide":
-            selected_rows.loc[:, 'glyburide'] = med_options
+            if med_choice == "Glyburide":
+                selected_rows.loc[:, 'glyburide'] = med_options
 
-        if med_choice == "Pioglitazone":
-            selected_rows.loc[:, 'pioglitazone'] = med_options
+            if med_choice == "Pioglitazone":
+                selected_rows.loc[:, 'pioglitazone'] = med_options
 
-        if med_choice == "Insulin":
-            selected_rows.loc[:, 'insulin'] = med_options
+            if med_choice == "Insulin":
+                selected_rows.loc[:, 'insulin'] = med_options
 
-        if med_choice == "Glyburide-Metformin":
-            selected_rows.loc[:, 'glyburide-metformin'] = med_options
+            if med_choice == "Glyburide-Metformin":
+                selected_rows.loc[:, 'glyburide-metformin'] = med_options
 
-        st.markdown("# Discharge:")
-        st.markdown(" _Select_ _where_ _to_ _discharge_ _inpatient_:")
+            st.markdown("# Discharge:")
+            st.markdown(" _Select_ _where_ _to_ _discharge_ _inpatient_:")
 
-        discharge = ["Home","Skilled Nursing Facility", "Home Health Service", "Rehab Center", 
-                     "Transfer to another hospital", "Short Stay Unit"]
-        # discharge_option = ['snf']
-        discharge_to = st.selectbox("Select from Menu", discharge)
-        if discharge_to == "Home":
-            selected_rows.loc[:, 'discharge_to'] = ['discharge_to_home']
-        if discharge_to == "Skilled Nursing Facility":
-            selected_rows.loc[:, 'discharge_to'] = ['snf']
-        if discharge_to == "Home Health Service":
-            selected_rows.loc[:, 'discharge_to'] = ['discharge_to_home_health_serv']
-        if discharge_to == "Rehab Center":
-            selected_rows.loc[:, 'discharge_to'] = ['discharge_to_another_rehab']
-        
-        if discharge_to == "Transfer to another hospital":
-            selected_rows.loc[:, 'discharge_to'] = ['discharge_to_inpatient_inst']
-        if discharge_to == "Short Stay Unit":
-            selected_rows.loc[:, 'discharge_to'] = ['discharge_to_short_hospital']
+            discharge = ["Home","Skilled Nursing Facility", "Home Health Service", "Rehab Center", 
+                         "Transfer to another hospital", "Short Stay Unit"]
+            # discharge_option = ['snf']
+            discharge_to = st.selectbox("Select from Menu", discharge)
+            if discharge_to == "Home":
+                selected_rows.loc[:, 'discharge_to'] = ['discharge_to_home']
+            if discharge_to == "Skilled Nursing Facility":
+                selected_rows.loc[:, 'discharge_to'] = ['snf']
+            if discharge_to == "Home Health Service":
+                selected_rows.loc[:, 'discharge_to'] = ['discharge_to_home_health_serv']
+            if discharge_to == "Rehab Center":
+                selected_rows.loc[:, 'discharge_to'] = ['discharge_to_another_rehab']
+            
+            if discharge_to == "Transfer to another hospital":
+                selected_rows.loc[:, 'discharge_to'] = ['discharge_to_inpatient_inst']
+            if discharge_to == "Short Stay Unit":
+                selected_rows.loc[:, 'discharge_to'] = ['discharge_to_short_hospital']
 
-        selected_rows.loc[:, 'time_in_hospital'] = new_time_in_hospital
-        selected_rows.loc[:, 'num_medications'] = new_num_medications
+            selected_rows.loc[:, 'time_in_hospital'] = new_time_in_hospital
+            selected_rows.loc[:, 'num_medications'] = new_num_medications
 
-        st.markdown("## Summary of New input")
-        st.write(selected_rows)
+            st.markdown("## Summary of New input")
+            st.write(selected_rows)
 
         if st.button("Simulate"):
             df3 = selected_rows
@@ -429,14 +428,12 @@ body {
             mergetab = pd.merge(multiplier, valuecoef, on='Variables')
             mergetab['Impact'] = mergetab['values'] * mergetab['coef']
             mergetab['absimpact'] = abs(mergetab['Impact'])
-            mergetab = mergetab[mergetab['Impact'] > 0]
+            #mergetab = mergetab[mergetab['Impact'] > 0]
             mergetab = mergetab.sort_values(by='absimpact', ascending=False)
             mergetab.index = mergetab['Variables']
             #mergetab = mergetab.drop(['age_cat_30-50', 'age_cat_50-70', 'insulin', 'num_medications', 'num_procedures',                 'repaglinide'])
-            mergetab = mergetab[mergetab['absimpact'] >= .005]
-            st.write(alt.Chart(mergetab).mark_bar(size=20).encode(
-                x=alt.X('Impact'), y=alt.X('Variables', sort=None), ).configure_axis(labelFontSize=20,
-                                                                                     titleFontSize=20))
+            #mergetab = mergetab[mergetab['absimpact'] >= .005]
+            #st.write(alt.Chart(mergetab).mark_bar(size=20).encode(x=alt.X('Impact'), y=alt.X('Variables', sort=None), ).configure_axis(labelFontSize=20, titleFontSize=20))
 
 
 
