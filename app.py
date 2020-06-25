@@ -118,7 +118,7 @@ def preprocessing(df_new, ID2):
     import pickle
     scalerfile = 'scaler.sav'
     scaler = pickle.load(open(scalerfile, 'rb'))
-    df2[numerics] = scaler.fit(idf2[numerics]).transform(df2[numerics])
+    df2[numerics] = scaler.fit(df2[numerics]).transform(df2[numerics])
 
     df =df.loc[ID2]
 
@@ -316,8 +316,8 @@ body {
         if not s:
             s.pressed_first_button = False
 
-    if st.button("Populate data of selected inpatient") or s.pressed_first_button:
-        s.pressed_first_button = True  # preserve the info that you hit a button between runs
+    if st.button("Populate data of selected inpatient"): #or s.pressed_first_button
+        #s.pressed_first_button = True  # preserve the info that you hit a button between runs
         st.markdown("# _Length_ _of_ _Stay_:")
         new_time_in_hospital = st.slider("Time in hospital", 1, 14, int(selected_rows['time_in_hospital']),
                                          None, None)
