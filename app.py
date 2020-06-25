@@ -118,7 +118,7 @@ def preprocessing(df_new, ID2):
     import pickle
     scalerfile = 'scaler.sav'
     scaler = pickle.load(open(scalerfile, 'rb'))
-    df2[numerics] = scaler.transform(df2[numerics])
+    df2[numerics] = scaler.fit(idf2[numerics]).transform(df2[numerics])
 
     df =df.loc[ID2]
 
