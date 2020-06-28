@@ -319,6 +319,9 @@ body {
 
         if st.button("Populate data of selected inpatient") or s.pressed_first_button:
             s.pressed_first_button = True  # preserve the info that you hit a button between runs
+            if selected_indicies is None or selected_indicies == []:
+                st.write("Please select an encounter ID.")
+                return
             st.markdown("# _Length_ _of_ _Stay_:")
             new_time_in_hospital = st.slider("Time in hospital", 1, 14, int(selected_rows['time_in_hospital']),
                                              None, None)
@@ -395,6 +398,9 @@ body {
         if st.button("Simulate"):
             df3 = selected_rows
             predictor = load_prediction_model("LogReg_model.sav")
+            if selected_indicies is None or selected_indicies == []:
+                st.write("Please select an encounter ID.")
+                return
             inputdata, scaleddata = preprocessing(df3, selected_indicies)
             prediction = predictor.predict(scaleddata)
             prediction = pd.DataFrame(prediction)
